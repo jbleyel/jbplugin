@@ -5,7 +5,6 @@
 ;--------------------------------
 ;Include Modern UI
 
-!include "nsProcess.nsh"
 !include "MUI2.nsh"
 !include "FileFunc.nsh"
  
@@ -144,14 +143,11 @@ Function CheckInstalled.NET
 		MessageBox MB_OK|MB_ICONEXCLAMATION "Microsoft .NET Framework 3.5 is not installed! Setup will Quit!" IDOK End
 	${EndIf}
 
-	${nsProcess::FindProcess} "dvdpro.exe" $R0
+	FindProcDLL::FindProc "dvdpro.exe"
 
-	${If} $R0 == 0
-		${nsProcess::Unload}
+	${If} $R0 == 1
 		MessageBox MB_OK|MB_ICONEXCLAMATION "DVD Profiler is running. Please close the Application and restart the setup." IDOK End
 	${EndIf}    
-
-	${nsProcess::Unload}
     
 	ReadRegStr $0 HKEY_CURRENT_USER "Software\Invelos Software\DVD Profiler" "AppPath"
 	${If} $0 == ""
