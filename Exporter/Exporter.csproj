@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{49F31FFB-34BA-4E16-AE57-DB47CE31B7D0}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Exporter</RootNamespace>
+    <AssemblyName>Exporter</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>51549e70ed5de1c3.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Simulate|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Simulate\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Checksums\Adler32.cs" />
+    <Compile Include="Checksums\CRC32.cs" />
+    <Compile Include="Checksums\IChecksum.cs" />
+    <Compile Include="Checksums\StrangeCRC.cs" />
+    <Compile Include="Core\FileSystemScanner.cs" />
+    <Compile Include="Core\INameTransform.cs" />
+    <Compile Include="Core\IScanFilter.cs" />
+    <Compile Include="Core\NameFilter.cs" />
+    <Compile Include="Core\PathFilter.cs" />
+    <Compile Include="Core\StreamUtils.cs" />
+    <Compile Include="Core\WindowsPathUtils.cs" />
+    <Compile Include="Encryption\PkzipClassic.cs" />
+    <Compile Include="Encryption\ZipAESStream.cs" />
+    <Compile Include="Encryption\ZipAESTransform.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LogWriter.cs" />
+    <Compile Include="PackClass.cs" />
+    <Compile Include="Profiles.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resource.de.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.de.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SharpZipBaseException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="WebFunc.cs" />
+    <Compile Include="Zip\Compression\Deflater.cs" />
+    <Compile Include="Zip\Compression\DeflaterConstants.cs" />
+    <Compile Include="Zip\Compression\DeflaterEngine.cs" />
+    <Compile Include="Zip\Compression\DeflaterHuffman.cs" />
+    <Compile Include="Zip\Compression\DeflaterPending.cs" />
+    <Compile Include="Zip\Compression\Inflater.cs" />
+    <Compile Include="Zip\Compression\InflaterDynHeader.cs" />
+    <Compile Include="Zip\Compression\InflaterHuffmanTree.cs" />
+    <Compile Include="Zip\Compression\PendingBuffer.cs" />
+    <Compile Include="Zip\Compression\Streams\DeflaterOutputStream.cs" />
+    <Compile Include="Zip\Compression\Streams\InflaterInputStream.cs" />
+    <Compile Include="Zip\Compression\Streams\OutputWindow.cs" />
+    <Compile Include="Zip\Compression\Streams\StreamManipulator.cs" />
+    <Compile Include="Zip\FastZip.cs" />
+    <Compile Include="Zip\IEntryFactory.cs" />
+    <Compile Include="Zip\WindowsNameTransform.cs" />
+    <Compile Include="Zip\ZipConstants.cs" />
+    <Compile Include="Zip\ZipEntry.cs" />
+    <Compile Include="Zip\ZipEntryFactory.cs" />
+    <Compile Include="Zip\ZipException.cs" />
+    <Compile Include="Zip\ZipExtraData.cs" />
+    <Compile Include="Zip\ZipFile.cs" />
+    <Compile Include="Zip\ZipHelperStream.cs" />
+    <Compile Include="Zip\ZipInputStream.cs" />
+    <Compile Include="Zip\ZipNameTransform.cs" />
+    <Compile Include="Zip\ZipOutputStream.cs" />
+    <EmbeddedResource Include="Form1.de.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resource.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.de.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="51549e70ed5de1c3.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Setup\ /Y
+rem copy $(TargetDir)ICSharpCode.SharpZipLib.dll $(SolutionDir)Setup\ /Y
+xcopy $(TargetDir)*.resources.dll $(SolutionDir)Setup\ /E /Y
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
