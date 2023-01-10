@@ -2,7 +2,7 @@
 // Profiles.cs
 //
 // jbplugin / Exporter
-// Copyright 2017 Jörg Bleyel
+// Copyright 2023 Jörg Bleyel
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -793,7 +793,18 @@ namespace Exporter
                                 if (nl.Name == "string")
                                 {
                                     string[] ele = nl.InnerText.Split(';');
-                                    _oldilist.Add(ele[0], ele[1]);
+                                    string[] fn = ele[0].Split('.');
+                                    string fnn = fn[0];
+                                    if(fn.Length==3)
+                                    {
+                                        fnn += "." + fn[1].Replace("F", "");
+                                    }
+                                    else if (fn.Length == 2)
+                                    {
+                                        fnn = fn[0];
+                                        fnn = fnn.Substring(0,fnn.Length-1);
+                                    }
+                                    _oldilist.Add(fnn, ele[1]);
                                 }
                             }
                         }
@@ -910,6 +921,7 @@ namespace Exporter
                     }
                     _sendlist.Add(k);
                 }
+
 
                 foreach (string k in mIHashes.Keys)
                 {

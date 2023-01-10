@@ -2,7 +2,7 @@
 // jbplugin.cs
 //
 // jbplugin 
-// Copyright 2017 Jörg Bleyel
+// Copyright 2023 Jörg Bleyel
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -395,6 +395,8 @@ namespace jbplugin
 
         }
 
+
+
         private void StartCheck(DoWorkEventArgs e)
         {
             LogWriter.Instance.WriteToLog("StartCheck");
@@ -527,6 +529,11 @@ namespace jbplugin
             }
         }
 
+        public void WriteLog(string text)
+        {
+            LogWriter.Instance.WriteToLog(text);
+        }
+
         private MainForm2 mf=null;
 
         private void HandleMenuClick(int MenuEventID)
@@ -620,7 +627,7 @@ namespace jbplugin
 
         public int GetVersionMinor()
         {
-            return 3;
+            return 4;
         }
 
         public static bool SetAllowUnsafeHeaderParsing20()

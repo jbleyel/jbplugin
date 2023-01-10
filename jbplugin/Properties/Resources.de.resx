@@ -117,74 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Bitte wählen Sie zuerst den Sync Modus</value>
+  <data name="AUTOIMPORTFAILED" xml:space="preserve">
+    <value>Automatischer Import fehlgeschlagen</value>
   </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>Sync Modus</value>
+  <data name="ERRORCONNECT" xml:space="preserve">
+    <value>Verbindung zum Gerät fehlerhaft</value>
   </data>
-  <data name="manualexportbtn.Text" xml:space="preserve">
-    <value>Starte Export manuell</value>
+  <data name="ERRORLOADEAN" xml:space="preserve">
+    <value>Fehler beim Laden der EANs/UPCs vom Gerät</value>
   </data>
-  <data name="btncheckconn.Text" xml:space="preserve">
-    <value>Verbindung Prüfen</value>
+  <data name="EXPORTING" xml:space="preserve">
+    <value>Exportiere...</value>
   </data>
-  <data name="labelIPAdress.Text" xml:space="preserve">
-    <value>IP Adresse</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Header1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Header1.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="btnGDFolder.Text" xml:space="preserve">
-    <value>Wähle Ordner</value>
+  <data name="NOITUNES" xml:space="preserve">
+    <value>iTunes nicht gefunden, bitte IP und Port manuell eingeben</value>
   </data>
-  <data name="btnDBFolder.Text" xml:space="preserve">
-    <value>Wähle Ordner</value>
+  <data name="READEANDONE" xml:space="preserve">
+    <value>Lesen der EANs/UPCs abgeschlossen</value>
   </data>
-  <data name="buttonDELEAN.Text" xml:space="preserve">
-    <value>Löschen</value>
-  </data>
-  <data name="buttonloadimport.Text" xml:space="preserve">
-    <value>Vom Gerät Laden</value>
-  </data>
-  <data name="btnlogfiles.Text" xml:space="preserve">
-    <value>Log Dateien</value>
-  </data>
-  <data name="tabCommon.Text" xml:space="preserve">
-    <value>Allgemein</value>
-  </data>
-  <data name="button1.Text" xml:space="preserve">
-    <value>Starte Autoimport</value>
-  </data>
-  <data name="tabSettings.Text" xml:space="preserve">
-    <value>Einstellungen</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="checkBoxAutostartExport.Size" type="System.Drawing.Size, System.Drawing">
-    <value>531, 24</value>
-  </data>
-  <data name="checkBoxAutostartExport.Text" xml:space="preserve">
-    <value>Starte Export nur bei Änderungen automatisch beim DVD-Profler Start</value>
-  </data>
-  <data name="labelclb2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>461, 20</value>
-  </data>
-  <data name="labelclb2.Text" xml:space="preserve">
-    <value>Bitte nur die Datenbanken Selektieren die auch benutzt werden.</value>
-  </data>
-  <data name="labelclb1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>198, 20</value>
-  </data>
-  <data name="labelclb1.Text" xml:space="preserve">
-    <value>DVD Profiler Datenbanken</value>
-  </data>
-  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>461, 20</value>
-  </data>
-  <data name="label4.Text" xml:space="preserve">
-    <value>Max Anzahl der Wiederholungen des Exports bei Netzwerkfehler</value>
-  </data>
-  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>218, 20</value>
-  </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>Max Profile pro Transfer Datei</value>
+  <data name="WIFIMODE" xml:space="preserve">
+    <value>WiFi Modus: Der DVD-Profiler erledingt die Updates der Profile über das lokale WLAN automatisch.</value>
   </data>
 </root>

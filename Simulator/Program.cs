@@ -2,7 +2,7 @@
 // Programm.cs
 //
 // jbplugin Simulator 
-// Copyright 2017 Jörg Bleyel
+// Copyright 2023 Jörg Bleyel
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License

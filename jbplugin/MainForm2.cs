@@ -2,7 +2,7 @@
 // MainForm2.cs
 //
 // jbplugin 
-// Copyright 2017 Jörg Bleyel
+// Copyright 2023 Jörg Bleyel
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -62,6 +62,9 @@ namespace jbplugin
 
         public jbplugin plug;
 
+        const int BUFFER_SIZE = 1024;
+
+        string xmlContent = "";
 
         public MainForm2()
         {
@@ -170,7 +173,7 @@ namespace jbplugin
     
         public void SetRunning(bool running)
         {
-            string t = (running) ? "Exporting ..." : "";
+            string t = (running) ? Properties.Resources.EXPORTING : "";
            // toolStripRight.Text= t;
         }
 
@@ -219,7 +222,7 @@ namespace jbplugin
 
         void OnDidServiceFailed()
         {
-            toolStripStatusLabel1.Text = "No itunes found, please put IP and Port manually";
+            toolStripStatusLabel1.Text = Properties.Resources.NOITUNES;
             checkBoxManualIP.Checked = true;
         }
 
@@ -442,7 +445,7 @@ namespace jbplugin
             psi.FileName = exe;
             if (!File.Exists(exe))
             {
-                toolStripStatusLabel1.Text = "Auto Import Failed";
+                toolStripStatusLabel1.Text = Properties.Resources.AUTOIMPORTFAILED; 
                 return;
             }
 
@@ -465,13 +468,13 @@ namespace jbplugin
                 toolStripStatusLabel1.Text = "";
                 ImportEAN();
 
-                toolStripStatusLabel1.Text = "Read EANs/UPCs finished";
+                toolStripStatusLabel1.Text = Properties.Resources.READEANDONE; 
                 btnautoimportean.Enabled = (listBoxEAN.Items.Count > 0);
                 buttonDELEAN.Enabled = btnautoimportean.Enabled;
             }
             catch
             {
-                toolStripStatusLabel1.Text = "Error loading EANs/UPCs from Device";
+                toolStripStatusLabel1.Text = Properties.Resources.ERRORLOADEAN; 
             }
 
         }
@@ -496,7 +499,7 @@ namespace jbplugin
         string dbtxtok = "DropBox Mode: The DVD-Profiler will update all Profiles completly unnatended";
         string gdtxtf = "Google Drive Mode: You need to select the App folder 'MMCApp' in your Google Drive root directory.";
         string gdtxtok = "Google Drive Mode: The DVD-Profiler will update all Profiles completly unnatended";
-        string wltxt = "WiFi Mode: The DVD-Profiler will update all Profiles completly unnatended in your local WiFi.";
+        string wltxt = Properties.Resources.WIFIMODE;  
         //string wltxtf = "WiFi Mode: You need to define the Device Name of your iPad or iPhone";
 
         private void radioButtonDB_CheckedChanged(object sender, EventArgs e)
@@ -597,6 +600,8 @@ namespace jbplugin
 
         private void btncheckconn_Click(object sender, EventArgs e)
         {
+            plug.WriteLog("Check Connection");
+
             RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\jbplugin", true);
             rk.SetValue("SyncMode", "0");
             string ip = checkBoxManualIP.Checked ? textBoxIP.Text : "";
@@ -615,7 +620,7 @@ namespace jbplugin
 
             if (rc == 1)
             {
-                toolStripStatusLabel1.Text = "Error Connect to Device";
+                toolStripStatusLabel1.Text = Properties.Resources.ERRORCONNECT; 
                 // ex
             }
             if (rc == 2)
@@ -638,17 +643,53 @@ namespace jbplugin
 
         private static ManualResetEvent allDone = new ManualResetEvent(false);
 
+        private static void TimeoutCallback(object state, bool timedOut)
+        {
+            if (timedOut)
+            {
+                HttpWebRequest request = state as HttpWebRequest;
+                if (request != null)
+                {
+                    request.Abort();
+                }
+            }
+        }
+
         public void HttpGet2(string uri)
         {
 
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(uri);
-            webRequest.Method = "GET";
-            webRequest.KeepAlive = false;
-            webRequest.ContentType = "application/xhtml+xml";
-            webRequest.ProtocolVersion = HttpVersion.Version11;
-            webRequest.BeginGetResponse(new AsyncCallback(GetResponseCallback), webRequest);
+            try
+            {
+                HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(uri);
+                webRequest.Method = "GET";
+                webRequest.KeepAlive = false;
+                webRequest.ContentType = "application/xhtml+xml";
+                webRequest.ProtocolVersion = HttpVersion.Version11;
+                RequestState requestState = new RequestState();
+                requestState.request = webRequest;
 
-            allDone.WaitOne();
+
+                IAsyncResult result = (IAsyncResult)webRequest.BeginGetResponse(new AsyncCallback(GetResponseCallback), requestState);
+                //  ThreadPool.RegisterWaitForSingleObject(result.AsyncWaitHandle, new WaitOrTimerCallback(TimeoutCallback), webRequest, 2 * 60 * 1000, true);
+
+                plug.WriteLog("HttpGet2 wait");
+                allDone.WaitOne();
+                plug.WriteLog("HttpGet2 wait done");
+                requestState.response.Close();
+                plug.WriteLog("HttpGet2 close");
+            }
+            catch (WebException e)
+            {
+                WebResult = "Connection Error 1";
+                plug.WriteLog("HttpGet error 1");
+                plug.WriteLog(e.Message);
+            }
+            catch (Exception e)
+            {
+                WebResult = "Connection Error 2";
+                plug.WriteLog("HttpGet error 2");
+                plug.WriteLog(e.Message);
+            }
 
 
         }
@@ -656,64 +697,95 @@ namespace jbplugin
         private string Content;
         private string WebResult;
 
+
         private void GetResponseCallback(IAsyncResult asynchronousResult)
         {
-
-            Content = null;
-
             WebResult = "";
 
             try
             {
+                // State of request is asynchronous.
+                RequestState myRequestState = (RequestState)asynchronousResult.AsyncState;
+                HttpWebRequest myHttpWebRequest = myRequestState.request;
+                myRequestState.response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(asynchronousResult);
 
-                HttpWebRequest request = (HttpWebRequest)asynchronousResult.AsyncState;
+                // Read the response into a Stream object.
+                Stream responseStream = myRequestState.response.GetResponseStream();
+                myRequestState.streamResponse = responseStream;
 
-                // End the operation
-                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(asynchronousResult);
-
-                StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                StringBuilder contentBuilder = new StringBuilder();
-                contentBuilder.Append(sr.ReadToEnd());
-                Content = contentBuilder.ToString();
-                sr.Close();
-
-                // Release the HttpWebResponse
-                response.Close();
+                // Begin the Reading of the contents of the HTML page and print it to the console.
+                IAsyncResult asynchronousInputRead = responseStream.BeginRead(myRequestState.BufferRead, 0, BUFFER_SIZE, new AsyncCallback(ReadCallBack), myRequestState);
+                return;
             }
-            catch (WebException /*ex*/)
+            catch (WebException e)
             {
-                WebResult = "Connection Error 1";
+                WebResult = "Connection Error 3";
+                plug.WriteLog("GetResponseCallback error");
+                plug.WriteLog(e.Message);
             }
-            catch (Exception /*ee*/)
-            {
-                // problem
-                WebResult = "Connection Error 2";
-            }
-
-
             allDone.Set();
-
         }
 
+        private void ReadCallBack(IAsyncResult asyncResult)
+        {
 
+            try
+            {
+
+                RequestState myRequestState = (RequestState)asyncResult.AsyncState;
+                Stream responseStream = myRequestState.streamResponse;
+                int read = responseStream.EndRead(asyncResult);
+                // Read the HTML page and then print it to the console.
+                if (read > 0)
+                {
+                    myRequestState.requestData.Append(Encoding.UTF8.GetString(myRequestState.BufferRead, 0, read));
+                    IAsyncResult asynchronousResult = responseStream.BeginRead(myRequestState.BufferRead, 0, BUFFER_SIZE, new AsyncCallback(ReadCallBack), myRequestState);
+                    return;
+                }
+                else
+                {
+                    if (myRequestState.requestData.Length > 1)
+                    {
+                        Content = myRequestState.requestData.ToString();
+                    }
+
+                    responseStream.Close();
+                }
+            }
+            catch (WebException e)
+            {
+                WebResult = "Connection Error 4";
+                plug.WriteLog("ReadCallBack Exception");
+                plug.WriteLog(e.Message);
+            }
+            allDone.Set();
+        }
+
+       
         private int ReadOldProfilesWF(string BaseUrl, out string Res)
         {
             int ol = 0;
-
             Res = "";
-         //   _oldlist = new Dictionary<string, string>();
-          //  _BaseU = BaseUrl;
+
             try
             {
-                string _res = "";
-                string get = "";// WebFunc.HttpGet(BaseUrl + "/gdp", out _res);
-                Res = _res;
-
                 HttpGet2(BaseUrl + "/gdp");
                 Res = WebResult;
-                get = Content;
+                string get = Content;
+                string _ld = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\jbplugin\dump.xml";
+
                 if (get != null)
                 {
+                    File.WriteAllText(_ld, get);
+                    get = "";
+                    foreach (string l in File.ReadAllLines(_ld))
+                    {
+                        if (!l.Contains("DOCTYPE"))
+                        {
+                            get += l;
+                        }
+                    }
+                    File.Delete(_ld);
 
                     int count = 0;
                     //int lastwrite = 0;
@@ -800,6 +872,15 @@ namespace jbplugin
             }
             catch (Exception ee)
             {
+                plug.WriteLog("ROP Error");
+                plug.WriteLog("---------------");
+                plug.WriteLog(ee.Source);
+                plug.WriteLog(ee.Message);
+                plug.WriteLog(ee.StackTrace);
+                plug.WriteLog("---------------");
+                plug.WriteLog(ee.InnerException.Source);
+                plug.WriteLog(ee.InnerException.Message);
+                plug.WriteLog(ee.InnerException.StackTrace);
                 Res = ee.Message;
                 return 1;
             }
@@ -897,4 +978,23 @@ namespace jbplugin
 
         }
     }
+
+    public class RequestState
+    {
+        // This class stores the State of the request.
+        const int BUFFER_SIZE = 1024;
+        public StringBuilder requestData;
+        public byte[] BufferRead;
+        public HttpWebRequest request;
+        public HttpWebResponse response;
+        public Stream streamResponse;
+        public RequestState()
+        {
+            BufferRead = new byte[BUFFER_SIZE];
+            requestData = new StringBuilder("");
+            request = null;
+            streamResponse = null;
+        }
+    }
+
 }

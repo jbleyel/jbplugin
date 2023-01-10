@@ -17,7 +17,7 @@ Name "JBPlugin"
 RequestExecutionLevel admin
 
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 2.3.0
+!define VERSION 2.4.0
 !define COMPANY "Joerg Bleyel"
 !define URL http://www.myappsolut.de
   
@@ -32,7 +32,7 @@ RequestExecutionLevel admin
 ;--------------------------------
 ;Pages
 
-Page custom CheckInstalled.NET
+Page custom PreInstall
 
 ;!insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE License.txt
@@ -51,14 +51,14 @@ InstallDir "$PROGRAMFILES\JBplugin"
 CRCCheck on
 XPStyle on
 ShowInstDetails hide
-VIProductVersion 2.3.0.0
+VIProductVersion 2.4.0.0
 VIAddVersionKey /LANG=${LANG_ENGLISH} ProductName JBPlugin
 VIAddVersionKey /LANG=${LANG_ENGLISH} ProductVersion "${VERSION}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} CompanyName "${COMPANY}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} CompanyWebsite "${URL}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} FileVersion "${VERSION}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} FileDescription "JBPluginSetup"
-VIAddVersionKey /LANG=${LANG_ENGLISH} LegalCopyright "(c) 2017 by J.Bleyel"
+VIAddVersionKey /LANG=${LANG_ENGLISH} LegalCopyright "(c) 2023 by J.Bleyel"
 InstallDirRegKey HKLM "${REGKEY}" Path
 SilentUnInstall silent
 
@@ -68,7 +68,6 @@ Section -Main SEC0000
     File u.reg
     File jbplugin.dll
     File ZeroconfService.dll
-	#File ICSharpCode.SharpZipLib.dll
     File doimport.exe
     File exporter.exe
     SetOutPath $INSTDIR\de
@@ -109,10 +108,13 @@ done${UNSECTION_ID}:
 
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
-	ExecWait 'regedit /s "$INSTDIR\u.reg"'
+    ExecWait 'regedit /s "$INSTDIR\u.reg"'
     Delete /REBOOTOK $INSTDIR\ZeroconfService.dll
-    Delete /REBOOTOK $INSTDIR\System.Data.SQLite.dll
     Delete /REBOOTOK $INSTDIR\jbplugin.dll
+    Delete /REBOOTOK $INSTDIR\DoImport.exe
+    Delete /REBOOTOK $INSTDIR\Exporter.exe
+    Delete /REBOOTOK $INSTDIR\u.reg
+    RMDir /R /REBOOTOK $INSTDIR\de
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
 
@@ -136,29 +138,8 @@ Function un.onInit
     !insertmacro SELECT_UNSECTION Main ${UNSEC0000}
 FunctionEnd
 
-Function CheckInstalled.NET
-
-	ReadRegStr $0 HKEY_LOCAL_MACHINE "Software\Microsoft\NET Framework Setup\NDP\v3.5" "Install"
-	${If} $0 == 0
-		MessageBox MB_OK|MB_ICONEXCLAMATION "Microsoft .NET Framework 3.5 is not installed! Setup will Quit!" IDOK End
-	${EndIf}
-
-	FindProcDLL::FindProc "dvdpro.exe"
-
-	${If} $R0 == 1
-		MessageBox MB_OK|MB_ICONEXCLAMATION "DVD Profiler is running. Please close the Application and restart the setup." IDOK End
-	${EndIf}    
-    
-	ReadRegStr $0 HKEY_CURRENT_USER "Software\Invelos Software\DVD Profiler" "AppPath"
-	${If} $0 == ""
-		MessageBox MB_YESNO "DVD Profiler not found! This is no error! Continue Yes/No!" IDYES DVDPROA IDNO End
-	${EndIf}
-
+Function PreInstall
+	MessageBox MB_OK|MB_ICONEXCLAMATION "Please close the DVD Profiler before you continue." IDOK DVDPROA
 DVDPROA:
-
 return
-
-  end:
-  quit
- 
 FunctionEnd
