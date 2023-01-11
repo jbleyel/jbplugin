@@ -111,6 +111,7 @@ Section /o -un.Main UNSEC0000
     ExecWait 'regedit /s "$INSTDIR\u.reg"'
     Delete /REBOOTOK $INSTDIR\ZeroconfService.dll
     Delete /REBOOTOK $INSTDIR\jbplugin.dll
+    Delete /REBOOTOK $INSTDIR\jbplugin.tlb
     Delete /REBOOTOK $INSTDIR\DoImport.exe
     Delete /REBOOTOK $INSTDIR\Exporter.exe
     Delete /REBOOTOK $INSTDIR\u.reg
